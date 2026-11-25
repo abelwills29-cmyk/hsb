@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social Change &amp; Deviance Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Signal Creative: Outfit (display) + Work Sans (body), perfect-fourth scale (×1.333): 12 · 16 · 21 · 28 · 38.
+   Stone Grey base #B8BECB, Deep Indigo text #142950, Vermilion highlight #E9300D.
+   Layout: one screen per page; sidebar navigation, page body, Previous / Next footer. */
+:root{
+  --base:#B8BECB; --base-2:#C9CED8; --panel:#F5F6F9; --card:#FFFFFF;
+  --ink:#142950; --body:#1F2E4F; --muted:#46516B; --line:#A4ABBA; --line-soft:#DDE1E8;
+  --hl:#E9300D; --hl-ink:#B42408; --hl-tint:#FCE4DD;
+  --good:#146C43; --good-tint:#DFF2E7; --bad:#B42318; --bad-tint:#FBE4E1;
+  --fs-0:12px; --fs-1:16px; --fs-2:21.33px; --fs-3:28.43px; --fs-4:37.9px;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --r-out:16px; --pad:8px; --r-in:8px;
+  --display:"Outfit",system-ui,sans-serif; --text:"Work Sans",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--base);color:var(--body);font:400 var(--fs-1)/1.55 var(--text);font-variant-numeric:tabular-nums;overflow:hidden}
+h1,h2,h3,h4{font-family:var(--display);color:var(--ink);line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:var(--fs-4);font-weight:800;letter-spacing:-.01em}
+h2{font-size:var(--fs-3);font-weight:700}
+h3{font-size:var(--fs-2);font-weight:600}
+h4{font-size:var(--fs-1);font-weight:700}
+p{margin:0;max-width:70ch}
+b{color:var(--ink);font-weight:600}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--hl);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* App shell */
+.app{display:grid;grid-template-columns:260px 1fr;height:100%}
+aside{background:var(--ink);color:#E6E9F0;display:flex;flex-direction:column;min-height:0}
+.brand{padding:var(--s5) var(--s5) var(--s4);display:grid;gap:var(--s1)}
+.brand strong{font-family:var(--display);font-size:var(--fs-2);color:#fff;font-weight:700;line-height:1.2}
+.brand span{font-size:var(--fs-0);color:var(--base);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.navlist{overflow-y:auto;padding:0 var(--s3) var(--s4);display:grid;gap:2px;align-content:start}
+.navgroup{font-size:var(--fs-0);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--base);padding:var(--s3) var(--s3) var(--s1)}
+.navlist a{color:#E6E9F0;text-decoration:none;font-size:15px;padding:7px var(--s3);border-radius:8px;display:flex;gap:var(--s2);align-items:baseline}
+.navlist a .n{font-size:var(--fs-0);color:var(--base);width:20px;flex:none}
+.navlist a:hover{background:rgba(255,255,255,.08)}
+.navlist a[aria-current="page"]{background:var(--hl);color:#fff;font-weight:600}
+.navlist a[aria-current="page"] .n{color:#fff}
+.navlist a.quizlink{border:1px solid rgba(255,255,255,.25)}
+
+main{display:grid;grid-template-rows:auto 1fr auto;min-height:0;padding:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:var(--s4);padding:14px var(--s6)}
+.crumb{font-size:var(--fs-0);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dots i{width:18px;height:4px;border-radius:2px;background:var(--line)}
+.dots i.on{background:var(--hl)}
+.stage{background:var(--panel);min-height:0;display:flex}
+.page{flex:1;background:var(--panel);padding:var(--s5) var(--s6);overflow:auto;display:none;flex-direction:column;gap:20px}
+.page.active{display:flex;animation:enter .3s ease}
+@keyframes enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.foot{display:flex;justify-content:space-between;align-items:center;padding:12px var(--s6);gap:var(--s4)}
+.navbtn{border:1px solid var(--ink);background:transparent;color:var(--ink);font-weight:600;border-radius:10px;padding:10px 18px}
+.navbtn.next{background:var(--ink);color:#fff}
+.navbtn:disabled{opacity:.35;cursor:default}
+.hint{font-size:var(--fs-0);color:var(--ink)}
+
+/* Page content */
+.ph{display:grid;gap:var(--s2)}
+.lede{color:var(--muted);font-size:17px}
+.grid{display:grid;gap:var(--s4);grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.g2{display:grid;gap:var(--s4);grid-template-columns:1fr 1fr}
+.card{background:var(--card);border:1px solid var(--line-soft);border-radius:12px;padding:var(--s4) 18px;display:grid;gap:6px;align-content:start}
+.card ul{margin:0;padding-left:18px;display:grid;gap:3px}
+.card.hl{border-top:4px solid var(--hl)}
+.callout{background:var(--card);border-left:4px solid var(--hl);border-radius:0 12px 12px 0;padding:14px 18px}
+.key{background:var(--hl-tint);border-radius:12px;padding:14px 18px;color:var(--body)}
+.tw{background:var(--card);border:1px solid var(--line-soft);border-radius:12px;overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{padding:8px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line-soft)}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--display);font-weight:600;color:var(--ink);background:#EEF0F4}
+.tw.big table{font-size:19px}
+.tw.big th{font-size:var(--fs-2);padding:12px 18px}
+.tw.big td{padding:12px 18px}
+.flow{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center}
+.flow span{background:var(--card);border:1px solid var(--line-soft);border-radius:999px;padding:6px 14px;font-weight:500;color:var(--ink);font-size:15px}
+.flow i{font-style:normal;color:var(--muted)}
+.stat{background:var(--card);border:1px solid var(--line-soft);border-radius:12px;padding:var(--s4) 18px}
+.stat b{display:block;font-family:var(--display);font-size:var(--fs-4);font-weight:800;line-height:1.05}
+.stat span{color:var(--muted);font-size:15px}
+.dag{color:var(--hl-ink);font-weight:700}
+.y{color:var(--good);font-weight:600}.n0{color:var(--bad);font-weight:600}
+.cta{background:var(--hl);color:#fff;border:0;border-radius:12px;padding:14px 24px;font:600 var(--fs-2) var(--display);text-decoration:none;display:inline-block;transition:transform .15s,box-shadow .15s}
+.cta:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(233,48,13,.35)}
+.tile{background:var(--card);border:1px solid var(--line-soft);border-radius:12px;padding:10px 16px;text-decoration:none;color:var(--body);display:grid;gap:2px;transition:border-color .15s}
+.tile:hover{border-color:var(--ink)}
+.tile b{font-family:var(--display);font-size:17px}
+.tile span{font-size:14px;color:var(--muted)}
+
+/* Quiz */
+.qwrap{display:grid;grid-template-columns:1fr 240px;gap:var(--s5);flex:1;min-height:0}
+.qmain{display:flex;flex-direction:column;gap:var(--s4);min-height:0}
+.qside{display:grid;gap:var(--s4);align-content:start}
+.scorebox{background:var(--card);border:1px solid var(--line-soft);border-radius:12px;padding:var(--s4) 18px;display:grid;gap:6px}
+.scorebox .big{font-family:var(--display);font-size:var(--fs-4);font-weight:800;color:var(--ink);line-height:1}
+.meter{height:8px;border-radius:999px;background:var(--line-soft);overflow:hidden}
+.meter span{display:block;height:100%;width:0;background:var(--hl);transition:width .4s ease}
+select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);width:100%}
+.qcard{background:var(--card);border:1px solid var(--line-soft);border-radius:12px;padding:var(--s5);display:grid;gap:var(--s4);align-content:start}
+.qtag{font-size:var(--fs-0);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.qtext{font-family:var(--display);font-size:var(--fs-2);font-weight:600;color:var(--ink);line-height:1.3}
+.opts{display:grid;gap:var(--s2)}
+.opt{text-align:left;background:var(--panel);border:1px solid var(--line-soft);border-radius:10px;padding:12px 14px;display:grid;grid-template-columns:26px 1fr;gap:var(--s2);color:var(--body);transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt .l{font-family:var(--display);font-weight:700;color:var(--muted)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--good);background:var(--good-tint);animation:pop .35s ease}
+.opt.wrong{border-color:var(--bad);background:var(--bad-tint);animation:shake .35s ease}
+.fb{border-radius:10px;padding:12px 14px;font-size:15px;animation:fade .3s ease}
+.fb.ok{background:var(--good-tint)}.fb.no{background:var(--bad-tint)}
+@keyframes pop{50%{transform:scale(1.015)}}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.bump{animation:pop .4s ease}
+.qnav{display:flex;gap:var(--s2);justify-content:space-between;flex-wrap:wrap}
+.btn{border:1px solid var(--ink);background:transparent;color:var(--ink);font-weight:600;border-radius:10px;padding:10px 16px}
+.btn.solid{background:var(--ink);color:#fff}
+.btn.hl{background:var(--hl);border-color:var(--hl);color:#fff}
+.sk{border-radius:12px;background:linear-gradient(90deg,var(--line-soft),var(--card),var(--line-soft));background-size:200% 100%;animation:sheen 1.2s linear infinite;height:56px}
+@keyframes sheen{from{background-position:200% 0}to{background-position:-200% 0}}
+.qcard textarea{font:inherit;width:100%;min-height:120px;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--body);resize:vertical}
+.model{display:grid;gap:var(--s2);border-left:4px solid var(--good);background:var(--good-tint);border-radius:0 10px 10px 0;padding:12px 16px;animation:fade .3s ease}
+.model label{display:grid;grid-template-columns:22px 1fr;gap:var(--s2);font-size:15px;cursor:pointer}
+.model input{width:18px;height:18px;accent-color:var(--hl)}
+
+.attempt-note{font-size:14px;color:var(--muted)}
+.ansbox{border-left:4px solid var(--ink);background:var(--card);border-radius:0 10px 10px 0;padding:12px 16px;display:grid;gap:4px;animation:fade .3s ease}
+.selfmark{display:flex;gap:var(--s2);flex-wrap:wrap}
+.btn.good{background:var(--good);border-color:var(--good);color:#fff}
+.btn.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.marked{font-weight:600}
+/* Small screens: sidebar becomes a top bar with a page picker; pages may scroll inside */
+.mobilepick{display:none}
+@media (max-width:860px){
+  body{overflow:auto}
+  .app{grid-template-columns:1fr;height:auto;min-height:100%}
+  aside{flex-direction:row;align-items:center;justify-content:space-between;padding:var(--s3) var(--s4)}
+  .brand{padding:0}.navlist{display:none}
+  .mobilepick{display:block;max-width:55%}
+  .topbar,.foot{padding-left:var(--s4);padding-right:var(--s4)}
+  .page{padding:var(--s4)}
+  .g2,.qwrap{grid-template-columns:1fr}
+  .dots{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand"><span>Challenges &amp; Changes</span><strong>Social Change &amp; Deviance Review</strong></div>
+  <select class="mobilepick" id="mpick" aria-label="Choose a page"></select>
+  <nav class="navlist" id="navlist" aria-label="Pages"></nav>
+</aside>
+<main>
+  <div class="topbar"><span class="crumb" id="crumb"></span><div class="dots" id="dots" aria-hidden="true"></div></div>
+  <div class="stage" id="stage">
+
+<section class="page" id="home" data-group="Start" data-title="Overview" style="gap:16px">
+  <div class="ph"><h1>Social change, movements and deviance</h1><p class="lede">Sixteen short pages, one topic each, then a 40-question quiz, 5 written questions and your teacher's 50 exam review questions. Use the arrow keys or the buttons below to move between pages.</p></div>
+  <div><a class="cta" href="#quiz">Start the quiz: 40 questions</a></div>
+  <div class="grid">
+    <a class="tile" href="#change"><b>Change</b><span>Continuity, factors, types, scale</span></a>
+    <a class="tile" href="#needs"><b>Social movements</b><span>Ingredients, theories, reinforcement</span></a>
+    <a class="tile" href="#lenses"><b>Sociological theories</b><span>Functionalism, conflict, interactionism</span></a>
+    <a class="tile" href="#collective"><b>Collective behaviour</b><span>Movement types, Smelser</span></a>
+    <a class="tile" href="#demography"><b>Society today</b><span>Demographics, Baby Boomers, culture, inequality</span></a>
+    <a class="tile" href="#deviance"><b>Deviance</b><span>Durkheim, Marx, Merton, labelling</span></a>
+    <a class="tile" href="#review"><b>Exam review</b><span>50 questions; answers unlock after you try</span></a>
+  </div>
+  <p class="hint"><span class="dag">†</span> marks standard textbook content added beyond your class notes. Check those parts against your slides.</p>
+</section>
+
+<section class="page" id="change" data-group="Change" data-title="Change vs continuity">
+  <div class="ph"><h2>Change pulls against continuity</h2><p class="lede">Societies are always pulled two ways.</p></div>
+  <div class="grid">
+    <div class="card"><h4>Change</h4><p>An alteration in society's ideas, behaviours, institutions or structures over time.</p></div>
+    <div class="card"><h4>Continuity</h4><p>The persistence of traditions, values and institutions: the stability that holds society together.</p></div>
+    <div class="card hl"><h4>When people are ready</h4><p>Change takes hold when people are <b>dissatisfied</b> with the present, <b>aware</b> of alternatives and <b>willing</b> to act.</p></div>
+  </div>
+  <h3>Three factors that drive change</h3>
+  <div class="grid">
+    <div class="card"><h4>Individuals</h4><p>Inventors, leaders and thinkers whose ideas and actions spark change.</p></div>
+    <div class="card"><h4>Physical environment</h4><p>Climate, disasters, resources and geography force adaptation, e.g., drought causing migration.</p></div>
+    <div class="card"><h4>Technology</h4><p>New tools reshape work, communication and daily life: printing press, internet, smartphones.</p></div>
+  </div>
+</section>
+
+<section class="page" id="pace" data-group="Change" data-title="Pace and scale">
+  <div class="ph"><h2>How fast, how, and how big change is</h2></div>
+  <div class="callout"><b>Evolutionary change</b> is slow and gradual, building up over a long time. Revolutionary change is rapid and dramatic.</div>
+  <div class="g2">
+    <div class="tw"><table><tr><th>How change happens</th><th>Meaning</th></tr>
+      <tr><td><b>Interactionism</b></td><td>Everyday interactions and shifting meanings (bottom-up)</td></tr>
+      <tr><td><b>Conflict</b></td><td>Struggle between groups over power and resources</td></tr>
+      <tr><td><b>Paradigm shift</b></td><td>A fundamental change in worldview (Earth-centred → Sun-centred)</td></tr>
+      <tr><td><b>Proximity</b></td><td>People near each other, physically or socially, copy ideas</td></tr>
+      <tr><td><b>Social continuity</b></td><td>Traditions and institutions resist or slow change</td></tr>
+    </table></div>
+    <div class="grid" style="grid-template-columns:1fr">
+      <div class="card"><h4>Macro</h4><p>Whole societies, nations, the globe: industrialization.</p></div>
+      <div class="card"><h4>Meso</h4><p>Organizations, institutions, communities: a school system.</p></div>
+      <div class="card"><h4>Micro</h4><p>Individuals and small groups: a family's habits.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="types" data-group="Change" data-title="Types of social change">
+  <div class="ph"><h2>Six types of social change</h2></div>
+  <div class="tw"><table><tr><th>Type</th><th>Meaning</th><th>Example <span class="dag">†</span></th></tr>
+    <tr><td><b>Transformative</b></td><td>Fundamentally alters society's basic structure</td><td>Industrial Revolution</td></tr>
+    <tr><td><b>Serial</b></td><td>A series of connected changes, each leading to the next</td><td>Invention → factories → urban growth</td></tr>
+    <tr><td><b>Secondary</b></td><td>Side effects that follow a main change</td><td>Cars lead to suburbs</td></tr>
+    <tr><td><b>Tertiary</b></td><td>Knock-on effects of the secondary changes</td><td>Suburbs lead to longer commutes, new retail</td></tr>
+    <tr><td><b>Counter-cultural</b></td><td>A group rejects dominant values and promotes alternatives</td><td>Hippie movement</td></tr>
+    <tr><td><b>Reform movement</b></td><td>Organized effort to change part of the system</td><td>Labour or voting-rights reforms</td></tr>
+  </table></div>
+  <div class="key"><b>The ripple:</b> primary → secondary → tertiary. The bigger the first change, the further the ripples travel.</div>
+</section>
+
+<section class="page" id="needs" data-group="Social movements" data-title="What movements need">
+  <div class="ph"><h2>What a social movement needs</h2><p class="lede">A movement is a sustained, organized effort for social change. Three ingredients usually line up.</p></div>
+  <div class="grid">
+    <div class="card hl"><h4>Political opportunity</h4><p>The system is open to change: allies in power, weak opposition, or a crisis that opens a window.</p></div>
+    <div class="card hl"><h4>Engaged individuals</h4><p>Committed people willing to join, donate, protest and spread the message.</p></div>
+    <div class="card hl"><h4>Organization and infrastructure</h4><p>Leaders, funding and communication networks that keep it going.</p></div>
+  </div>
+  <h3>Reinforcement theory (Skinner)</h3>
+  <div class="grid">
+    <div class="card"><h4>Positive reinforcement</h4><p>Add a reward → behaviour increases.</p></div>
+    <div class="card"><h4>Negative reinforcement</h4><p>Remove something unpleasant → behaviour increases.</p></div>
+    <div class="card"><h4>Punishment</h4><p>Behaviour decreases.</p></div>
+    <div class="card"><h4>Extinction</h4><p>Reinforcement stops → behaviour fades.</p></div>
+  </div>
+</section>
+
+<section class="page" id="concepts" data-group="Social movements" data-title="Theories of change">
+  <div class="ph"><h2>Theories and concepts behind change</h2></div>
+  <div class="tw"><table><tr><th>Concept</th><th>Core idea</th><th>Link to change</th></tr>
+    <tr><td><b>Value-added theory</b> (Smelser)</td><td>Six conditions add up to produce collective behaviour</td><td>Explains when movements erupt</td></tr>
+    <tr><td><b>Technological determinism</b></td><td>Technology drives society: culture, work, relationships</td><td>Tech is the engine; ignores human choice</td></tr>
+    <tr><td><b>Social constructivism</b></td><td>Society shapes reality, knowledge and technology</td><td>Society shapes tech</td></tr>
+    <tr><td><b>Agency theory</b></td><td>Individuals can make choices and act on society</td><td>People can create change</td></tr>
+    <tr><td><b>Locus of control</b></td><td>Internal: "my actions decide." External: "fate, luck or others decide."</td><td>Internals more likely to join movements</td></tr>
+    <tr><td><b>Cognitive dissonance</b></td><td>Discomfort from conflicting beliefs, or acting against them</td><td>Pushes people to change</td></tr>
+  </table></div>
+  <div class="key"><b>Tech showdown:</b> determinism = tech shapes society. Constructivism = society shapes tech.</div>
+</section>
+
+<section class="page" id="lenses" data-group="Sociological theories" data-title="The three lenses">
+  <div class="ph"><h2>Functionalism, conflict theory and symbolic interactionism <span class="dag">†</span></h2><p class="lede">Expect a question asking you to compare them.</p></div>
+  <div class="tw"><table><tr><th></th><th>Functionalism</th><th>Conflict theory</th><th>Symbolic interactionism</th></tr>
+    <tr><td><b>Big idea</b></td><td>A system of parts working together for stability</td><td>A struggle between groups for limited resources and power</td><td>Built from everyday interactions and meanings</td></tr>
+    <tr><td><b>Level</b></td><td>Macro</td><td>Macro</td><td>Micro</td></tr>
+    <tr><td><b>Thinkers</b></td><td>Durkheim, Parsons, Merton</td><td>Marx (also Weber)</td><td>Mead, Cooley, Blumer</td></tr>
+    <tr><td><b>Focus</b></td><td>Order, stability, shared values</td><td>Inequality, power, class</td><td>Symbols, communication, identity</td></tr>
+    <tr><td><b>Social change</b></td><td>Disruptive; society adapts to restore balance</td><td>Natural and necessary; driven by conflict</td><td>Shaped by shifting meanings</td></tr>
+    <tr><td><b>One word</b></td><td>Fit together</td><td>Clash</td><td>Interpret</td></tr>
+  </table></div>
+  <div class="card"><h4>Also know: feminist theory <span class="dag">†</span></h4><p>Examines gender inequality and how society is organized around gender. Related to conflict theory, but focused on gender.</p></div>
+</section>
+
+<section class="page" id="conflict" data-group="Sociological theories" data-title="Conflict theory and alienation">
+  <div class="ph"><h2>Conflict theory and Marx's alienation</h2></div>
+  <div class="callout">Society is an <b>arena of inequality</b> where groups engage in <b>power struggles</b>.</div>
+  <div class="g2">
+    <div class="grid" style="grid-template-columns:1fr">
+      <div class="card"><h4>Marx's two classes <span class="dag">†</span></h4><ul><li><b>Bourgeoisie:</b> own the means of production</li><li><b>Proletariat:</b> workers who sell their labour</li><li>Owners benefit; workers are exploited, which leads to alienation</li></ul></div>
+      <div class="card"><h4>Core claims</h4><ul><li>Resources and power are unevenly shared</li><li>The powerful shape laws and institutions to protect themselves</li><li>Inequality creates tension that drives change</li></ul></div>
+    </div>
+    <div class="tw"><table><tr><th>Alienated from</th><th>Meaning</th></tr>
+      <tr><td><b>1. Themselves</b></td><td>Cut off from their own human potential</td></tr>
+      <tr><td><b>2. Other workers</b></td><td>Competition and isolation split workers apart</td></tr>
+      <tr><td><b>3. The process</b></td><td>No control over how the work is done</td></tr>
+      <tr><td><b>4. The product</b></td><td>They don't own or benefit from what they produce</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<section class="page" id="apply" data-group="Sociological theories" data-title="One topic, three lenses">
+  <div class="ph"><h2>Applying the three lenses to one topic</h2></div>
+  <div class="tw"><table><tr><th>Topic</th><th>Functionalism</th><th>Conflict</th><th>Interactionism</th></tr>
+    <tr><td><b>Deviance</b></td><td>Strain theory; Durkheim: deviance shows where norms break down and reinforces boundaries</td><td>Elites define what counts as deviant; laws favour the powerful</td><td>Labelling theory: labels and stigma shape identity</td></tr>
+    <tr><td><b>Social movements</b></td><td>A response to strain in the system</td><td>Less powerful groups fighting for change, e.g., BLM</td><td>Shared meanings and symbols unite people</td></tr>
+    <tr><td><b>Education</b></td><td>Teaches skills and values</td><td>Keeps class inequality going</td><td>Teacher–student interactions and expectations</td></tr>
+  </table></div>
+  <div class="key"><b>Exam move:</b> for any topic, give one line per lens, using its keyword: fit together, clash, interpret.</div>
+</section>
+
+<section class="page" id="collective" data-group="Collective behaviour" data-title="Collective behaviour">
+  <div class="ph"><h2>Collective behaviour and social movements</h2><p class="lede">Two forces drive social change: collective behaviour and social movements.</p></div>
+  <div class="grid">
+    <div class="card hl"><h4>Collective behaviour</h4><p>Voluntary, often spontaneous activity by large numbers of people that typically <b>violates dominant norms and values</b>.</p></div>
+    <div class="card"><h4>Institutionalized behaviour</h4><p>Guided by <b>firmly established norms</b>: predictable, like going to school or work.</p></div>
+    <div class="card"><h4>Social movement</h4><p>A <b>sustained, organized</b> collective effort for social change. Slide example: Black Lives Matter.</p></div>
+  </div>
+  <div class="tw"><table><tr><th>Movement type</th><th>What it wants</th><th>Memory hook</th></tr>
+    <tr><td><b>Reform</b></td><td>Change part of the social structure</td><td>Fix a piece</td></tr>
+    <tr><td><b>Revolutionary</b></td><td>Total change in society</td><td>Flip everything</td></tr>
+    <tr><td><b>Religious</b></td><td>Spiritual or supernatural belief systems</td><td>Faith-driven</td></tr>
+  </table></div>
+</section>
+
+<section class="page" id="smelser" data-group="Collective behaviour" data-title="Smelser's six conditions">
+  <div class="ph"><h2>Smelser's value-added theory</h2><p class="lede">Six conditions build on each other. Collective behaviour is <b>more likely when social control is weak</b>. Bold rows are on your review sheet.</p></div>
+  <div class="tw"><table><tr><th>#</th><th>Condition</th><th>Meaning</th><th>BLM-style example <span class="dag">†</span></th></tr>
+    <tr><td>1</td><td>Structural conduciveness <span class="dag">†</span></td><td>Society's setup allows it</td><td>People are free to gather</td></tr>
+    <tr><td>2</td><td><b>Structural strain</b></td><td>A problem causing frustration and anger</td><td>Racial injustice</td></tr>
+    <tr><td>3</td><td>Generalized belief <span class="dag">†</span></td><td>A shared explanation of the problem</td><td>"The system is unfair to us"</td></tr>
+    <tr><td>4</td><td><b>Precipitating factor</b></td><td>The spark that triggers action</td><td>A high-profile incident</td></tr>
+    <tr><td>5</td><td><b>Mobilization for action</b></td><td>Organizing and spreading the action</td><td>Protests, hashtags</td></tr>
+    <tr><td>6</td><td><b>Social control</b></td><td>Authorities' response; weak control → more likely</td><td>Police and laws</td></tr>
+  </table></div>
+  <div class="flow"><span>Strain: the anger</span><i>→</i><span>Spark</span><i>→</i><span>Mobilization</span><i>→</i><span>Weak control lets it happen</span></div>
+</section>
+
+<section class="page" id="demography" data-group="Society today" data-title="Demography and trends">
+  <div class="ph"><h2>Demography and trend vocabulary</h2></div>
+  <div class="grid">
+    <div class="card"><h4>Demography</h4><p>The study of the structure, growth and changes in human populations.</p></div>
+    <div class="card"><h4>Characteristics measured</h4><p>Age, gender or sex, race, income and religion.</p></div>
+    <div class="card"><h4>Why it matters</h4><p>Helps governments, businesses and researchers plan for future needs.</p></div>
+  </div>
+  <div class="tw big"><table><tr><th>Term</th><th>Definition</th></tr>
+    <tr><td><b>Trend</b></td><td>The way things in society change over time. Your notes: an ever-changing event that attracts people.</td></tr>
+    <tr><td><b>Social trend</b></td><td>A change in the behaviour of people or groups within society</td></tr>
+    <tr><td><b>Demographic trend</b></td><td>A change in a population or its characteristics: birth rates, ageing, immigration</td></tr>
+  </table></div>
+  <div class="g2">
+    <div class="card"><h4>Political impact</h4><p>New policies such as retirement and healthcare reforms.</p></div>
+    <div class="card"><h4>Economic impact</h4><p>Changes labour supply and business decisions.</p></div>
+  </div>
+</section>
+
+<section class="page" id="trends" data-group="Society today" data-title="Trends happening now">
+  <div class="ph"><h2>Trends happening now, and their causes</h2></div>
+  <div class="tw"><table><tr><th>Trend</th><th>Cause (from your class notes)</th></tr>
+    <tr><td><b>Birth rate declining</b></td><td>Inflation makes raising children too expensive</td></tr>
+    <tr><td><b>Marriage put aside</b></td><td>Financial burden; people prioritize jobs and education</td></tr>
+    <tr><td><b>Education quality declining</b></td><td>Students lean on AI instead of learning</td></tr>
+    <tr><td><b>Income depleting</b></td><td>Automation and taxes</td></tr>
+  </table></div>
+  <h3>Case: social media in Malaysia, 2022</h3>
+  <div class="grid">
+    <div class="stat"><b>89%</b><span>of Malaysians used social media</span></div>
+    <div class="stat"><b>~3 hrs</b><span>per day spent on social media</span></div>
+    <div class="stat"><b>WhatsApp</b><span>highest penetration rate</span></div>
+  </div>
+</section>
+
+<section class="page" id="culture" data-group="Society today" data-title="Culture and inequality">
+  <div class="ph"><h2>Ethnocentrism, cultural lag and inequality</h2></div>
+  <div class="g2">
+    <div class="card"><h4>Ethnocentrism</h4><p>Using one's own culture, ethnicity or group as the standard to judge others. The opposite, cultural relativism, judges a culture by its own standards <span class="dag">†</span>.</p></div>
+    <div class="card"><h4>Cultural lag</h4><p>The gap when <b>material culture</b> (technology, tools) changes faster than <b>non-material culture</b> (laws, norms, values). Example <span class="dag">†</span>: AI advancing faster than rules for using it.</p></div>
+  </div>
+  <div class="callout">Social movements, deviance and collective behaviour are born out of <b>unfairness or inequality</b> in income, education and health care.</div>
+  <div class="flow"><span>Inequality</span><i>→</i><span>Strain and frustration</span><i>→</i><span>Deviance, collective behaviour, movements</span></div>
+  <div class="key"><b>If no one addresses these issues:</b> movements could become obsolete and powerless as the rich keep the poor down. Support this thesis with conflict theory and Smelser's social control.</div>
+</section>
+
+<section class="page" id="deviance" data-group="Deviance" data-title="Deviance and labelling">
+  <div class="ph"><h2>Deviance: Durkheim, Marx and labelling</h2></div>
+  <div class="g2">
+    <div class="card"><h4>Deviance</h4><p>Behaviour that violates social norms, values or expectations. It varies between societies because norms differ from culture to culture.</p></div>
+    <div class="card"><h4>Émile Durkheim</h4><p><b>Anomie:</b> a breakdown of social norms and values. An act is criminal <b>because it shocks the collective conscience</b>.</p></div>
+    <div class="card"><h4>Karl Marx</h4><p><b>Alienation:</b> disconnection from work, society, others and oneself.</p></div>
+    <div class="card hl"><h4>Labelling theory</h4><p>People become deviant because of the labels placed on them. <b>Stigma</b> is a powerful negative status that affects self-concept, identity and interactions.</p></div>
+  </div>
+  <div class="flow"><span>Labelled deviant</span><i>→</i><span>Stigma</span><i>→</i><span>Self-concept changes</span><i>→</i><span>Treated differently</span></div>
+</section>
+
+<section class="page" id="strain" data-group="Deviance" data-title="Merton's strain theory">
+  <div class="ph"><h2>Merton's strain theory: five adaptations</h2><p class="lede">Society sets <b>goals</b> (success, wealth) without always giving the <b>means</b> (education, a job). The gap creates strain, which can lead to deviance.</p></div>
+  <div class="tw"><table><tr><th>Adaptation</th><th>Goals</th><th>Means</th><th>Example <span class="dag">†</span></th></tr>
+    <tr><td><b>Conformity</b></td><td class="y">Accept</td><td class="y">Accept</td><td>Study hard, get a good job</td></tr>
+    <tr><td><b>Innovation</b></td><td class="y">Accept</td><td class="n0">Reject</td><td>Wants money, turns to crime</td></tr>
+    <tr><td><b>Ritualism</b> <span class="dag">†</span></td><td class="n0">Reject</td><td class="y">Accept</td><td>Follows rules, no real ambition</td></tr>
+    <tr><td><b>Retreatism</b> <span class="dag">†</span></td><td class="n0">Reject</td><td class="n0">Reject</td><td>Drops out of society</td></tr>
+    <tr><td><b>Rebellion</b> <span class="dag">†</span></td><td>Replace</td><td>Replace</td><td>Pushes for new goals and methods</td></tr>
+  </table></div>
+  <div class="key"><b>Order to memorise:</b> Conformity, Innovation, Ritualism, Retreatism, Rebellion (C-I-R-R-R).</div>
+</section>
+
+<section class="page" id="boomers" data-group="Society today" data-title="Baby Boomers and the 1960s">
+  <div class="ph"><h2>Baby Boomers and the 1960s</h2><p class="lede">From your Demographics (U3) slides: how a population change led to social change.</p></div>
+  <div class="g2">
+    <div class="card hl"><h4>Baby Boomers</h4><p>The generation born roughly <b>1946 to 1964</b>, named for the <b>high birth rates</b> after World War II.</p></div>
+    <div class="card"><h4>Permissive parenting</h4><p>The parenting style that became more popular after World War II.</p></div>
+  </div>
+  <div class="tw"><table><tr><th>1960s change</th><th>What happened</th></tr>
+    <tr><td><b>Counterculture movement</b></td><td>A major cultural movement whose central theme was <b>freedom and self-expression</b></td></tr>
+    <tr><td><b>Social movements</b></td><td>Feminist movement, Black Panthers, Native American awareness movement</td></tr>
+    <tr><td><b>Divorce</b></td><td>Divorce rates increased</td></tr>
+    <tr><td><b>Marriage</b></td><td>Marriage rates declined and people delayed marriage</td></tr>
+  </table></div>
+  <div class="flow"><span>Baby boom (demographic trend)</span><i>&rarr;</i><span>Permissive parenting</span><i>&rarr;</i><span>1960s counterculture and movements</span><i>&rarr;</i><span>Family changes</span></div>
+</section>
+
+<section class="page" id="quiz" data-group="Practice" data-title="Quiz: 40 questions">
+  <div class="qwrap">
+    <div class="qmain" id="qmain" aria-live="polite"><div class="sk"></div><div class="sk" style="height:220px"></div></div>
+    <div class="qside">
+      <div class="scorebox"><span class="qtag">Score</span><span class="big" id="score">0 / 0</span><span class="hint" id="scoreNote">Answer a question to start</span><div class="meter"><span id="meter"></span></div></div>
+      <label class="qtag" for="topic">Topic</label><select id="topic"></select>
+      <button class="btn" type="button" id="retry">Retry missed</button>
+      <button class="btn solid" type="button" id="reset">Restart quiz</button>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="written" data-group="Practice" data-title="Written questions">
+  <div class="qwrap">
+    <div class="qmain" id="wmain"><div class="sk" style="height:260px"></div></div>
+    <div class="qside"><div class="scorebox"><span class="qtag">Written questions</span><span class="big" id="wcount">1 / 5</span><span class="hint">Write, reveal the model answer, tick what you covered.</span></div></div>
+  </div>
+</section>
+
+<section class="page" id="review" data-group="Practice" data-title="Exam review: 50 + bonus">
+  <div class="qwrap">
+    <div class="qmain" id="rmain" aria-live="polite"><div class="sk" style="height:260px"></div></div>
+    <div class="qside">
+      <div class="scorebox"><span class="qtag">Got right</span><span class="big" id="rscore">0 / 0</span><span class="hint" id="rnote">Type your answer first, then reveal</span><div class="meter"><span id="rmeter"></span></div></div>
+      <label class="qtag" for="rtopic">Section</label><select id="rtopic"></select>
+      <button class="btn" type="button" id="rretry">Retry missed</button>
+      <button class="btn solid" type="button" id="rreset">Restart review</button>
+    </div>
+  </div>
+</section>
+
+  </div>
+  <div class="foot"><button class="navbtn" type="button" id="prev">← Previous</button><span class="hint" id="pos"></span><button class="navbtn next" type="button" id="next">Next →</button></div>
+</main>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const st={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const Q=[
+["Change","Continuity in society refers to:",["Rapid, dramatic change","The persistence of traditions, values and institutions","A breakdown of norms","Technology replacing culture"],1,"Continuity is the stability that holds society together."],
+["Change","Change is most likely to take hold when people are:",["Satisfied with the present","Dissatisfied, aware of alternatives and willing to act","Isolated from others","Following institutional norms"],1,"All three conditions together create readiness."],
+["Change","A drought that forces families to migrate is which factor of change?",["Individual","Technology","Physical environment","Paradigm shift"],2,"Climate and resources are physical environment factors."],
+["Change","Evolutionary change is:",["Slow and gradual over a long time","Sudden and violent","Always caused by technology","Limited to individuals"],0,"The opposite is revolutionary change."],
+["Change","Moving from an Earth-centred to a Sun-centred view of the universe is a:",["Proximity effect","Paradigm shift","Tertiary change","Counter-culture"],1,"A fundamental change in worldview."],
+["Change","Teens copying a trend from friends who live nearby shows change spreading through:",["Proximity","Social continuity","Anomie","Determinism"],0,"Closeness, physical or social, spreads change."],
+["Change","A reform of the national school system is change at which scale?",["Micro","Meso","Macro","Tertiary"],1,"Meso = organizations and institutions."],
+["Social change","Cars leading to the growth of suburbs is a:",["Primary change","Secondary change","Tertiary change","Transformative change"],1,"A side effect of the main change."],
+["Social change","Suburbs leading to longer commutes and new shopping malls is a:",["Secondary change","Tertiary change","Serial change","Reform movement"],1,"A knock-on effect of a secondary change."],
+["Social change","The hippie movement rejecting mainstream values is:",["Transformative change","Counter-cultural change","A reform movement","Institutional behaviour"],1,"Rejects dominant values and promotes alternatives."],
+["Movements","The three ingredients a movement needs are political opportunity, engaged individuals and:",["Violence","Organization and infrastructure","Government approval","Celebrity support"],1,"Leaders, funding and networks keep it going."],
+["Movements","\"Smartphones changed how teenagers form friendships\" reflects:",["Social constructivism","Technological determinism","Agency theory","Cognitive dissonance"],1,"Tech shapes society."],
+["Movements","\"Society decided how social media would be used and regulated\" reflects:",["Technological determinism","Social constructivism","Anomie","Strain theory"],1,"Society shapes tech."],
+["Movements","A person who believes \"my actions decide my future\" has:",["An external locus of control","An internal locus of control","Cognitive dissonance","Anomie"],1,"Internal locus. These people are more likely to join movements."],
+["Movements","Someone who values the environment but drives a gas-guzzler feels uncomfortable. This is:",["Cognitive dissonance","Stigma","Ethnocentrism","Alienation"],0,"Acting against your beliefs creates discomfort that pushes change."],
+["Movements","Removing an unpleasant chore to INCREASE a behaviour is:",["Positive reinforcement","Negative reinforcement","Punishment","Extinction"],1,"Still increases behaviour; it is not punishment."],
+["Movements","Agency theory says individuals:",["Are fully controlled by social structure","Have the power to make choices and act on society","Copy those nearby","Only respond to rewards"],1,"Agency is the capacity to act."],
+["Theories","Which theory sees society as parts working together for stability?",["Conflict theory","Functionalism","Symbolic interactionism","Feminist theory"],1,"Fit together."],
+["Theories","Which theory works at the MICRO level?",["Functionalism","Conflict theory","Symbolic interactionism","Value-added theory"],2,"It studies everyday interactions and meanings."],
+["Theories","In Marx's theory, those who own the means of production are the:",["Proletariat","Bourgeoisie","Middle class","Elites of meaning"],1,"Workers are the proletariat."],
+["Theories","A factory worker with no say in how the work is done is alienated from:",["The product","The process of production","Other workers","Themselves"],1,"No control over the process."],
+["Theories","Labelling theory belongs to which lens?",["Functionalism","Conflict theory","Symbolic interactionism","Determinism"],2,"Labels are meanings created in interaction."],
+["Theories","Conflict theory says social change is:",["Disruptive and should be avoided","Natural and driven by struggles over power","Caused only by technology","Always micro-level"],1,"Inequality creates tension that drives change."],
+["Collective","Going to school every weekday is an example of:",["Collective behaviour","Institutionalized behaviour","A social movement","Anomie"],1,"Guided by firmly established norms."],
+["Collective","Collective behaviour is best described as:",["Planned and rule-following","Voluntary, often spontaneous and norm-violating","Always violent","Controlled by institutions"],1,"Large numbers, spontaneous, breaks dominant norms."],
+["Collective","A movement seeking TOTAL change in society is:",["Reform","Revolutionary","Religious","Counter-cultural"],1,"Flip everything."],
+["Collective","In Smelser's theory, the spark that triggers action is the:",["Structural strain","Precipitating factor","Mobilization for action","Social control"],1,"e.g., a high-profile incident."],
+["Collective","Smelser says collective behaviour is more likely when social control is:",["Strong","Weak","Absent from the theory","Religious"],1,"Weak control lets action happen."],
+["Collective","Ongoing racial injustice causing anger is which Smelser condition?",["Structural strain","Precipitating factor","Mobilization","Generalized belief"],0,"A social problem causing frustration."],
+["Demographics","Demography is the study of:",["Deviant behaviour","The structure, growth and changes of human populations","Technology","Religious movements"],1,"Age, sex, race, income and religion are measured."],
+["Demographics","An ageing population is a:",["Social trend","Demographic trend","Counter-culture","Precipitating factor"],1,"A change in population characteristics."],
+["Demographics","More people choosing to work from home is a:",["Demographic trend","Social trend","Paradigm shift","Tertiary change"],1,"A change in people's behaviour."],
+["Demographics","In 2022, what share of Malaysians used social media?",["59%","72%","89%","98%"],2,"89%, about 3 hours a day, with WhatsApp highest."],
+["Demographics","Your notes link the declining birth rate mainly to:",["AI","Inflation making children too expensive","Religion","Immigration"],1,"The financial cost of raising children."],
+["Culture","Judging another culture by your own culture's standards is:",["Cultural relativism","Ethnocentrism","Cultural lag","Anomie"],1,"Relativism judges a culture by its own standards."],
+["Culture","Laws struggling to keep up with AI is an example of:",["Cultural lag","Ethnocentrism","Evolutionary change","Labelling"],0,"Material culture moves faster than non-material culture."],
+["Deviance","Durkheim's anomie means:",["Disconnection from work","A breakdown of social norms and values","A negative status","A label"],1,"Alienation is Marx's term."],
+["Deviance","Someone accepts the goal of wealth but turns to crime to get it. Merton calls this:",["Conformity","Innovation","Ritualism","Retreatism"],1,"Accept goals, reject means."],
+["Deviance","Someone rejects both society's goals and its means and drops out. This is:",["Rebellion","Ritualism","Retreatism","Innovation"],2,"Reject both."],
+["Deviance","A powerful negative status that affects self-concept and identity is:",["Stigma","Anomie","Agency","Strain"],0,"The key result of labelling."]
+];
+const SA=[
+["Compare how functionalism, conflict theory and symbolic interactionism explain social movements.",`<p><b>Functionalism:</b> movements respond to strain in the system and help society adapt and restore balance. <b>Conflict theory:</b> movements are less powerful groups fighting against inequality and those in power, e.g., BLM. <b>Interactionism:</b> movements form when people share meanings, symbols and identities, e.g., slogans and hashtags.</p>`,["Functionalism explained (strain / restoring balance)","Conflict theory explained (power, inequality)","Interactionism explained (shared meanings, symbols)","A real example used"]],
+["Use Smelser's value-added theory to explain how a protest movement develops.",`<p>Structural <b>strain</b> (e.g., racial injustice) causes anger. A <b>precipitating factor</b> (a high-profile incident) sparks action. <b>Mobilization</b> spreads it through protests and social media. Weak <b>social control</b> makes it more likely to grow. Conditions build on each other like building blocks.</p>`,["Structural strain with example","Precipitating factor with example","Mobilization for action","Social control (weak control = more likely)"]],
+["Explain Merton's strain theory and give an example of two adaptations.",`<p>Society sets <b>goals</b> (wealth, success) but not everyone has the <b>means</b> (education, jobs), and this gap creates strain. <b>Innovation:</b> accepts goals, rejects means, e.g., theft to get rich. <b>Retreatism:</b> rejects both, e.g., dropping out of society. Also conformity, ritualism, rebellion.</p>`,["Goals vs means explained","Strain leads to deviance","Adaptation 1 with example","Adaptation 2 with example"]],
+["Explain cultural lag using a current example.",`<p>Cultural lag is the gap when <b>material culture</b> (technology) changes faster than <b>non-material culture</b> (laws, norms, values). Example: AI tools spread quickly in schools, but rules about AI use in assignments are still unclear, causing confusion over cheating.</p>`,["Defines material culture","Defines non-material culture","Explains the gap","Relevant current example"]],
+["What could happen if society does not address inequality? Argue using conflict theory.",`<p>Inequality causes strain and frustration, which leads to deviance, collective behaviour and movements. If ignored, powerful groups can shape laws and institutions to protect themselves (conflict theory) and use strong <b>social control</b> to keep the poor down, so movements become <b>obsolete and powerless</b>. Alternatively, rising tension could build into revolutionary change.</p>`,["Links inequality to strain","Uses conflict theory (power, elites)","States a clear thesis","Supports with Smelser or an example"]]
+];
+
+/* ---------- page router ---------- */
+const pages=[...document.querySelectorAll('.page')];
+const ids=pages.map(p=>p.id);
+let g='',nav='',opts='';
+pages.forEach((p,i)=>{if(p.dataset.group!==g){g=p.dataset.group;nav+=`<div class="navgroup">${g}</div>`;opts+=(opts?'</optgroup>':'')+`<optgroup label="${g}">`}
+  nav+=`<a href="#${p.id}" class="${p.id==='quiz'?'quizlink':''}"><span class="n">${String(i).padStart(2,'0')}</span><span>${p.dataset.title}</span></a>`;
+  opts+=`<option value="${p.id}">${p.dataset.title}</option>`});
+$('#navlist').innerHTML=nav;$('#mpick').innerHTML=opts+'</optgroup>';
+$('#dots').innerHTML=pages.map(()=>'<i></i>').join('');
+function go(id){if(!ids.includes(id))id='home';const i=ids.indexOf(id);
+  pages.forEach(p=>p.classList.toggle('active',p.id===id));
+  document.querySelectorAll('#navlist a').forEach(a=>{if(a.getAttribute('href')==='#'+id)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  document.querySelectorAll('#dots i').forEach((d,j)=>d.classList.toggle('on',j<=i));
+  const p=pages[i];$('#crumb').textContent=p.dataset.group+' · '+p.dataset.title;$('#pos').textContent=`Page ${i+1} of ${pages.length}`;
+  $('#prev').disabled=i===0;$('#next').disabled=i===pages.length-1;$('#mpick').value=id;
+  p.scrollTop=0;document.title=p.dataset.title+' · Social Change & Deviance Review';
+}
+function step(d){const i=ids.indexOf((location.hash||'#home').slice(1));const n=Math.max(0,Math.min(ids.length-1,(i<0?0:i)+d));location.hash=ids[n]}
+$('#prev').addEventListener('click',()=>step(-1));$('#next').addEventListener('click',()=>step(1));
+$('#mpick').addEventListener('change',e=>{location.hash=e.target.value});
+window.addEventListener('hashchange',()=>go(location.hash.slice(1)));
+document.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1)});
+go((location.hash||'#home').slice(1));
+
+/* ---------- quiz: one question per screen ---------- */
+let order=Q.map((_,i)=>i),ans={},cur=0,filter="All";
+const topics=["All",...new Set(Q.map(q=>q[0]))];
+$('#topic').innerHTML=topics.map(t=>`<option>${t}</option>`).join('');
+function list(){return order.filter(i=>filter==="All"||Q[i][0]===filter)}
+function fb(q,a){const ok=a===q[3];return `<div class="fb ${ok?'ok':'no'}"><b>${ok?'Correct.':'Not quite. Answer: '+q[2][q[3]]+'.'}</b> ${q[4]}</div>`}
+function drawQ(){const L=list();if(cur>=L.length)cur=Math.max(0,L.length-1);
+  if(!L.length){$('#qmain').innerHTML='<div class="qcard"><p>No questions in this set.</p></div>';return}
+  const i=L[cur],q=Q[i],a=ans[i];
+  $('#qmain').innerHTML=`<div class="qcard"><span class="qtag">${q[0]} · Question ${cur+1} of ${L.length}</span><div class="qtext">${q[1]}</div><div class="opts">${q[2].map((o,j)=>{let c='';if(a!==undefined){if(j===q[3])c=' right';else if(j===a)c=' wrong'}return `<button type="button" class="opt${c}" data-j="${j}" ${a!==undefined?'disabled':''}><span class="l">${"ABCD"[j]}</span><span>${o}</span></button>`}).join('')}</div><div id="fbslot">${a!==undefined?fb(q,a):''}</div></div>
+  <div class="qnav"><button class="btn" type="button" id="qprev" ${cur===0?'disabled':''}>← Previous question</button><button class="btn ${a!==undefined?'hl':'solid'}" type="button" id="qnext">${cur===L.length-1?'Finish':'Next question →'}</button></div>`;
+}
+function upd(b){const L=order;const done=L.filter(i=>ans[i]!==undefined).length,right=L.filter(i=>ans[i]===Q[i][3]).length;const s=$('#score');s.textContent=`${right} / ${done}`;if(b){s.classList.remove('bump');void s.offsetWidth;s.classList.add('bump')}
+  $('#scoreNote').textContent=done?`correct · ${L.length-done} of ${L.length} still to answer`:'Answer a question to start';$('#meter').style.width=(done/L.length*100)+'%';return{done,right}}
+$('#qmain').addEventListener('click',e=>{const o=e.target.closest('.opt');const L=list();
+  if(o&&!o.disabled){const i=L[cur];ans[i]=+o.dataset.j;const q=Q[i];document.querySelectorAll('#qmain .opt').forEach((b,j)=>{b.disabled=true;if(j===q[3])b.classList.add('right');else if(j===ans[i])b.classList.add('wrong')});$('#fbslot').innerHTML=fb(q,ans[i]);const n=$('#qnext');n.classList.remove('solid');n.classList.add('hl');upd(true);return}
+  if(e.target.closest('#qprev')){cur--;drawQ();return}
+  if(e.target.closest('#qnext')){if(cur<L.length-1){cur++;drawQ()}else{const r=upd(false);const p=order.length?Math.round(r.right/order.length*100):0;$('#qmain').innerHTML=`<div class="qcard"><span class="qtag">Result</span><div class="qtext">You scored ${r.right} out of ${order.length} (${p}%)</div><p>${r.done<order.length?`You skipped ${order.length-r.done}. Go back to answer them, or retry the ones you missed.`:p===100?'Every question right. You are ready.':p>=80?'Strong. Retry the ones you missed to lock them in.':'Revisit the pages behind your misses, then press Retry missed.'}</p><div class="qnav"><button class="btn" type="button" id="qback">← Back to questions</button></div></div>`}}
+  if(e.target.closest('#qback')){drawQ()}
+});
+$('#topic').addEventListener('change',e=>{filter=e.target.value;cur=0;drawQ()});
+$('#reset').addEventListener('click',()=>{order=Q.map((_,i)=>i);ans={};cur=0;filter="All";$('#topic').value="All";drawQ();upd(false)});
+$('#retry').addEventListener('click',()=>{const w=order.filter(i=>ans[i]!==undefined&&ans[i]!==Q[i][3]);if(!w.length){$('#scoreNote').textContent='No missed questions yet.';return}order=w;w.forEach(i=>delete ans[i]);cur=0;filter="All";$('#topic').value="All";drawQ();upd(false)});
+
+/* ---------- written questions: one per screen ---------- */
+let wc=0;
+function drawW(){const s=SA[wc];const sv=st.get('sa'+wc,{a:'',c:[],o:false});$('#wcount').textContent=`${wc+1} / ${SA.length}`;
+  $('#wmain').innerHTML=`<div class="qcard"><span class="qtag">Written question ${wc+1}</span><div class="qtext">${s[0]}</div><label class="qtag" for="wa">Your answer</label><textarea id="wa" placeholder="Write your answer…">${sv.a.replace(/</g,'&lt;')}</textarea><div><button class="btn hl" type="button" id="wrev">${sv.o?'Hide model answer':'Show model answer'}</button></div>${sv.o?`<div class="model"><b>Model answer</b>${s[1]}<b>Tick what you included:</b>${s[2].map((p,j)=>`<label><input type="checkbox" data-j="${j}" ${sv.c.includes(j)?'checked':''}><span>${p}</span></label>`).join('')}<span class="hint">${sv.c.length} / ${s[2].length} points</span></div>`:''}</div>
+  <div class="qnav"><button class="btn" type="button" id="wprev" ${wc===0?'disabled':''}>← Previous</button><button class="btn solid" type="button" id="wnext" ${wc===SA.length-1?'disabled':''}>Next written question →</button></div>`}
+$('#wmain').addEventListener('click',e=>{if(e.target.closest('#wrev')){const sv=st.get('sa'+wc,{a:'',c:[],o:false});sv.o=!sv.o;st.set('sa'+wc,sv);drawW()}if(e.target.closest('#wprev')){wc--;drawW()}if(e.target.closest('#wnext')){wc++;drawW()}});
+$('#wmain').addEventListener('input',e=>{if(e.target.id==='wa'){const sv=st.get('sa'+wc,{a:'',c:[],o:false});sv.a=e.target.value;st.set('sa'+wc,sv)}});
+$('#wmain').addEventListener('change',e=>{const cb=e.target.closest('input[type=checkbox]');if(!cb)return;const sv=st.get('sa'+wc,{a:'',c:[],o:false});sv.c=[...document.querySelectorAll('#wmain input[type=checkbox]')].filter(x=>x.checked).map(x=>+x.dataset.j);st.set('sa'+wc,sv);drawW()});
+
+drawQ();upd(false);drawW();
+/* ---------- exam review: answer locked until attempted ---------- */
+const RV=[
+["Collective behaviour","What two forces are identified as drivers of social change?","Collective behaviour and social movements."],
+["Collective behaviour","What is collective behaviour?","Voluntary, often spontaneous activity by large numbers of people that typically violates dominant norms and values."],
+["Collective behaviour","What type of behaviour is guided by firmly established norms?","Institutionalized behaviour."],
+["Collective behaviour","Going to school or work is an example of what type of behaviour?","Institutionalized behaviour."],
+["Collective behaviour","What is a social movement?","A sustained, organized collective effort focused on social change."],
+["Collective behaviour","Which type of social movement seeks to improve society by changing part of the social structure?","Reform movement."],
+["Collective behaviour","Which type of movement seeks total change in society?","Revolutionary movement."],
+["Collective behaviour","What type of movement is based on spiritual or supernatural belief systems?","Religious movement."],
+["Collective behaviour","Who developed Value-Added Theory?","Neil Smelser."],
+["Collective behaviour","According to Value-Added Theory, how many conditions are needed for collective behaviour?","Six conditions."],
+["Collective behaviour","What is structural strain?","A social problem that causes frustration and anger."],
+["Collective behaviour","What is a precipitating factor?","A spark that triggers collective behaviour."],
+["Collective behaviour","What does mobilization of action refer to?","The organization and spread of collective action after the initial spark."],
+["Collective behaviour","When is collective behaviour more likely to occur according to Value-Added Theory?","When social control is weak."],
+["Collective behaviour","Which modern social movement is used as an example in the slides?","Black Lives Matter."],
+["Demographics","What is demography?","The study of the structure, growth, and changes in human populations."],
+["Demographics","What is a trend?","The way things in society change over time."],
+["Demographics","What is a social trend?","A change in the behaviour of people or groups within society."],
+["Demographics","Name one demographic characteristic used to study populations.","Any one of: age, gender, race, income or religion."],
+["Demographics","Why is demographic data important?","It helps governments, businesses, and researchers plan for future needs."],
+["Demographics","What percentage of Malaysians used social media in 2022?","89%."],
+["Demographics","Which social media platform had the highest penetration rate in Malaysia in 2022?","WhatsApp."],
+["Demographics","Approximately how many hours per day do Malaysians spend on social media?","About 3 hours per day."],
+["Demographics","What is a demographic trend?","A change in a population or its characteristics over time."],
+["Demographics","Give one example of a demographic trend.","Any one of: increasing birth rates, declining birth rates, aging populations, or changes in immigration."],
+["Demographics","How can demographic change affect politics?","It can lead to new policies, such as retirement and healthcare reforms."],
+["Demographics","How can demographic change affect the economy?","It can influence labour supply and business decisions."],
+["Demographics","What generation was born roughly between 1946 and 1964?","Baby Boomers."],
+["Demographics","Why are they called Baby Boomers?","Because of the high birth rates during that period."],
+["Demographics","What parenting style became more popular after World War II?","Permissive parenting."],
+["Demographics","What major cultural movement emerged in the 1960s?","The counterculture movement."],
+["Demographics","What was a major theme of the 1960s counterculture?","Freedom and self-expression."],
+["Demographics","Name one social movement associated with the 1960s.","Any one of: the feminist movement, the Black Panthers, or the Native American awareness movement."],
+["Demographics","What family trend increased during the 1960s?","Divorce rates increased."],
+["Demographics","What trend regarding marriage emerged during the 1960s?","Marriage rates declined and people delayed marriage."],
+["Deviance","What is deviance?","Behaviour that violates social norms, values, or expectations."],
+["Deviance","Which sociologist developed the concept of anomie?","Émile Durkheim."],
+["Deviance","What is anomie?","A breakdown of social norms and values."],
+["Deviance","Who is most associated with the concept of alienation?","Karl Marx."],
+["Deviance","What is alienation?","A feeling of disconnection from work, society, others, and oneself."],
+["Deviance","Why does deviance vary between societies?","Because social norms differ from culture to culture."],
+["Deviance","According to Durkheim, is an act criminal because it shocks society or does it shock society because it is criminal?","It is criminal because it shocks the collective conscience."],
+["Deviance","What theory argues that society pressures people to achieve goals without always providing the means?","Strain Theory."],
+["Deviance","Who developed Strain Theory?","Robert K. Merton."],
+["Deviance","In Strain Theory, what are \"goals\"?","Socially accepted ambitions or expectations."],
+["Deviance","In Strain Theory, what are \"means\"?","The approved ways of achieving goals."],
+["Deviance","Which adaptation accepts goals and accepts means?","Conformity."],
+["Deviance","Which adaptation accepts goals but rejects approved means?","Innovation."],
+["Deviance","What theory focuses on how people become deviant because of labels placed on them?","Labelling Theory."],
+["Deviance","What is a stigma?","A powerful negative status that affects self-concept, social identity, and interactions with others."],
+["Tie-breaker","Bonus tie-breaker: What are the five adaptations to strain identified by Robert K. Merton?","Conformity, Innovation, Ritualism, Retreatism, and Rebellion."]
+];
+const rk='rv_state';
+let R=st.get(rk,{att:{},mark:{},open:{}}),rOrder=RV.map((_,i)=>i),rcur=0,rfilter="All";
+const rtopics=["All",...new Set(RV.map(q=>q[0]))];
+$('#rtopic').innerHTML=rtopics.map(t=>`<option>${t}</option>`).join('');
+function rlist(){return rOrder.filter(i=>rfilter==="All"||RV[i][0]===rfilter)}
+function rsave(){st.set(rk,R)}
+function esc(t){return (t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function rdraw(){const L=rlist();if(!L.length){$('#rmain').innerHTML='<div class="qcard"><p>No questions in this set.</p></div>';rupd();return}
+  if(rcur>=L.length)rcur=L.length-1;const i=L[rcur],q=RV[i],att=R.att[i]||'',open=!!R.open[i],m=R.mark[i];
+  $('#rmain').innerHTML=`<div class="qcard"><span class="qtag">${q[0]} · Question ${rcur+1} of ${L.length}</span><div class="qtext">${q[1]}</div>
+  <label class="qtag" for="ratt">Your answer</label><textarea id="ratt" placeholder="Type your answer here to unlock the official answer…" ${open?'readonly':''}>${esc(att)}</textarea>
+  ${open?`<div class="ansbox"><span class="qtag">Answer from your review sheet</span><b>${q[2]}</b></div>
+   <div class="selfmark"><span class="attempt-note" style="align-self:center">Did you get it?</span><button class="btn good" type="button" data-m="1">${m===1?'✓ ':''}I got it</button><button class="btn bad" type="button" data-m="0">${m===0?'✓ ':''}I missed it</button></div>`
+   :`<div class="selfmark"><button class="btn hl" type="button" id="rrev" ${att.trim()?'':'disabled'}>Reveal answer</button><span class="attempt-note" id="rlock" style="align-self:center">${att.trim()?'':'Write your attempt first to unlock'}</span></div>`}
+  </div>
+  <div class="qnav"><button class="btn" type="button" id="rprev" ${rcur===0?'disabled':''}>&larr; Previous question</button><button class="btn solid" type="button" id="rnext">${rcur===L.length-1?'Finish':'Next question &rarr;'}</button></div>`;
+  rupd()}
+function rupd(b){const done=rOrder.filter(i=>R.mark[i]!==undefined).length,right=rOrder.filter(i=>R.mark[i]===1).length;
+  const s=$('#rscore');s.textContent=`${right} / ${done}`;if(b){s.classList.remove('bump');void s.offsetWidth;s.classList.add('bump')}
+  $('#rnote').textContent=done?`marked · ${rOrder.length-done} of ${rOrder.length} still to do`:'Type your answer first, then reveal';
+  $('#rmeter').style.width=(done/rOrder.length*100)+'%';return{done,right}}
+$('#rmain').addEventListener('input',e=>{if(e.target.id!=='ratt')return;const i=rlist()[rcur];R.att[i]=e.target.value;rsave();const has=!!e.target.value.trim();const b=$('#rrev');if(b)b.disabled=!has;const l=$('#rlock');if(l)l.textContent=has?'':'Write your attempt first to unlock'});
+$('#rmain').addEventListener('click',e=>{const L=rlist(),i=L[rcur];
+  if(e.target.closest('#rrev')){if(!(R.att[i]||'').trim())return;R.open[i]=true;rsave();rdraw();return}
+  const mb=e.target.closest('[data-m]');if(mb){R.mark[i]=+mb.dataset.m;rsave();rdraw();rupd(true);return}
+  if(e.target.closest('#rprev')){rcur--;rdraw();return}
+  if(e.target.closest('#rnext')){if(rcur<L.length-1){rcur++;rdraw()}else{const r=rupd();const p=rOrder.length?Math.round(r.right/rOrder.length*100):0;$('#rmain').innerHTML=`<div class="qcard"><span class="qtag">Result</span><div class="qtext">You got ${r.right} out of ${rOrder.length} (${p}%)</div><p>${r.done<rOrder.length?`${rOrder.length-r.done} questions are not marked yet. Go back to finish them.`:p===100?'Every review question right.':'Press Retry missed to go through only the ones you got wrong.'}</p><div class="qnav"><button class="btn" type="button" id="rback">&larr; Back to questions</button></div></div>`}}
+  if(e.target.closest('#rback'))rdraw();
+});
+$('#rtopic').addEventListener('change',e=>{rfilter=e.target.value;rcur=0;rdraw()});
+$('#rreset').addEventListener('click',()=>{R={att:{},mark:{},open:{}};rsave();rOrder=RV.map((_,i)=>i);rcur=0;rfilter="All";$('#rtopic').value="All";rdraw()});
+$('#rretry').addEventListener('click',()=>{const w=rOrder.filter(i=>R.mark[i]===0);if(!w.length){$('#rnote').textContent='No missed questions yet.';return}w.forEach(i=>{delete R.att[i];delete R.mark[i];delete R.open[i]});rsave();rOrder=w;rcur=0;rfilter="All";$('#rtopic').value="All";rdraw()});
+rdraw();
+
+})();
+</script>
+</body>
+</html>
